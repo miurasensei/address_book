@@ -35,8 +35,8 @@ public class AdressBookServlet extends HttpServlet {
 		//アドレス一覧情報取得
 		AddressBook arb = new AddressBook();
 		List<Address> addressList = arb.getAll();
-		//アドレス一覧が取得できているか確認
 		String a = addressList.get(0).getName();
+
 		//リクエストスコープに保存
 		request.setAttribute("addressList",addressList);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/ADR001.jsp");

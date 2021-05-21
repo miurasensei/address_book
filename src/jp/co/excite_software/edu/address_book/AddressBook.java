@@ -38,6 +38,11 @@ public class AddressBook {
 	String sql = "select * from ADDRESS_BOOK as a left outer join MAIL_ADDRESS as m on a.uuid = m.book_uuid left outer join PHONE_NUMBER p on a.uuid = p.book_uuid";
 
 	public List<Address> getAll(){
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		try(
 				Connection conn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
 				PreparedStatement pStmt = conn.prepareStatement(sql);
@@ -49,9 +54,9 @@ public class AddressBook {
 				String name = rs.getString("a.name");
 				String kana = rs.getString("a.kana");
 				List<String> mailAddressList = new ArrayList<String>();
-				mailAddressList.set(0, rs.getString("m.mail_address"));
+				mailAddressList.add(rs.getString("m.mail_address"));
 				List<String> phoneNumberList = new ArrayList<String>();
-				phoneNumberList.set(0, rs.getString("p.phone_number"));
+				phoneNumberList.add(rs.getString("p.phone_number"));
 				String streetAddress = rs.getString("a.address");
 				String memo = rs.getString("a.memo");
 

@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="jp.co.excite_software.edu.address_book.Address" %>
 <%@ page import="java.util.List"%>
-<%List<Address> addressList = (List<Address>)request.getAttribute("addressList"); %>
+<%List<Address> addressList = (List<Address>)request.getAttribute("addressList");%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -18,14 +18,16 @@
 				<th>メールアドレス</th>
 				<th>電話番号</th>
 			</tr>
-			<tr>
+
 			<% for(int i = 0; i < addressList.size(); i++){%>
+			<tr>
 				<th><label for="lblName"><%=addressList.get(i).getName()%></label></th>
 				<th><label for="lblKana"><%=addressList.get(i).getKana()%></label></th>
-				<th><label for="lblMail"><%=addressList.get(i).getMailAddressList().get(0)%></label></th>
-				<th><label for="lblPhone"><%=addressList.get(i).getPhoneNumberList().get(0)%></label></th>
-			<%} %>
+				<th><label for="lblMail"><%=addressList.get(i).getMailAddressList()%></label></th>
+				<th><label for="lblPhone"><%=addressList.get(i).getPhoneNumberList()%></label></th>
 			</tr>
+			<%} %>
+
 		</table>
 	</body>
 </html>

@@ -11,8 +11,11 @@ public class Address {
 	private String address;
 	private String memo;
 
+	//TODO コンストラクタを作ればrsをリストに詰めることができる。
 	public Address(String uuid,String name,String kana,List<String> mailAddressList,
-			List<String> phoneNumberList,String address,String memo) {}
+			List<String> phoneNumberList,String address,String memo) {
+		this.uuid = uuid;
+	}
 
 	public Address(String name,String kana,List<String> mailAddressList,
 			List<String> phoneNumberList,String address,String memo) {}
