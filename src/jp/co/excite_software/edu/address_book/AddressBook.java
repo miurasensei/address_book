@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.mysql.cj.protocol.Resultset;
+
 public class AddressBook {
 	static private String UUID;
 	static private String NAME;
@@ -32,24 +34,22 @@ public class AddressBook {
 	static private String dbUser = "root";
 	static private String dbPassword = "excite";
 
-
 	List<Address> addressList = new ArrayList<Address>();
 
 	String sql = "select * from ADDRESS_BOOK as a left outer join MAIL_ADDRESS as m on a.uuid = m.book_uuid left outer join PHONE_NUMBER p on a.uuid = p.book_uuid";
 
-	public List<Address> getAll(){
+	public List<Address> getAll() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		try(
-				Connection conn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+		try (
+				Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 				PreparedStatement pStmt = conn.prepareStatement(sql);
-				ResultSet rs = pStmt.executeQuery();
-				){
+				ResultSet rs = pStmt.executeQuery();) {
 			//select文の結果を格納
-			while(rs.next()) {
+			while (rs.next()) {
 				String uuid = rs.getString("a.uuid");
 				String name = rs.getString("a.name");
 				String kana = rs.getString("a.kana");
@@ -60,17 +60,18 @@ public class AddressBook {
 				String streetAddress = rs.getString("a.address");
 				String memo = rs.getString("a.memo");
 
-				Address address = new Address(uuid,name,kana,mailAddressList,phoneNumberList,streetAddress,memo);
+				Address address = new Address(uuid, name, kana, mailAddressList, phoneNumberList, streetAddress, memo);
 				addressList.add(address);
 			}
-
 			return addressList;
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
 		}
 	}
 
+	private List<Address> ToList(Connection conn, Resultset rs) {
 
+	}
 
 }

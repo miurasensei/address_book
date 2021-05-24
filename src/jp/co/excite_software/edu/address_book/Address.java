@@ -12,13 +12,27 @@ public class Address {
 	private String memo;
 
 	//TODO コンストラクタを作ればrsをリストに詰めることができる。
-	public Address(String uuid,String name,String kana,List<String> mailAddressList,
-			List<String> phoneNumberList,String address,String memo) {
+	public Address(String uuid, String name, String kana, List<String> mailAddressList,
+			List<String> phoneNumberList, String address, String memo) {
 		this.uuid = uuid;
+		this.name = name;
+		this.kana = kana;
+		this.mailAddressList = mailAddressList;
+		this.phoneNumberList = phoneNumberList;
+		this.address = address;
+		this.memo = memo;
+
 	}
 
-	public Address(String name,String kana,List<String> mailAddressList,
-			List<String> phoneNumberList,String address,String memo) {}
+	public Address(String name, String kana, List<String> mailAddressList,
+			List<String> phoneNumberList, String address, String memo) {
+		this.name = name;
+		this.kana = kana;
+		this.mailAddressList = mailAddressList;
+		this.phoneNumberList = phoneNumberList;
+		this.address = address;
+		this.memo = memo;
+	}
 
 	public String getUuid() {
 		return uuid;
