@@ -10,14 +10,23 @@
 		<form action = "/address_book/AdressBookServlet" method="post">
 			<table>
 				<tr><th>氏名</th><td><input type="text" name ="txtName" maxlength="50" required></td></tr>
+
 				<tr><th>かな</th><td><input type="text" name ="txtKana" maxlength="50"></td></tr>
+
 				<tr><th>メールアドレス</th><td><input type="email" name ="txtMailAddress1" maxlength="256"></td></tr>
+
 				<tr><th></th><td><input type="email" name ="txtMailAddress2" maxlength="256"></td></tr>
+
 				<tr><th></th><td><input type="email" name ="txtMailAddress3" maxlength="256"></td></tr>
+
 				<tr><th>電話番号</th><td><input type="tel" name ="txtPhoneNumber1" maxlength="20" pattern="[\d()-]*"></td></tr>
+
 				<tr><th></th><td><input type="tel" name ="txtPhoneNumber2" maxlength="20" pattern="[\d()-]*"></td></tr>
+
 				<tr><th></th><td><input type="tel" name ="txtPhoneNumber3" maxlength="20" pattern="[\d()-]*"></td></tr>
+
 				<tr><th>住所</th><td><input type="text" name ="txtAddress" maxlength="200"></td></tr>
+
 				<tr><th>メモ</th><td><input type="text" name ="txtMemo" maxlength="2000"></td></tr>
 			</table>
 

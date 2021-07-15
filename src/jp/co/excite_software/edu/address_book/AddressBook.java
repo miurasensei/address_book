@@ -55,6 +55,9 @@ public class AddressBook {
 		}
 	}
 
+	/*
+	 * 一覧用に取得してきたデータを成形
+	 */
 	private List<Address> toList(ResultSet rs) {
 
 		List<String> mailAddressList = new ArrayList<String>();
@@ -63,6 +66,7 @@ public class AddressBook {
 		try {
 			//リストの要素番号
 			int i = 0;
+			//比較用添え字
 			int comparisonIndex = 0;
 			while (rs.next()) {
 				String uuid = rs.getString(AB_UUID);
@@ -70,7 +74,9 @@ public class AddressBook {
 				String kana = rs.getString(KANA);
 				String streetAddress = rs.getString(ADDRESS);
 				String memo = rs.getString(MEMO);
-				//一行前と比較
+
+				//一行目
+				//TODO 一行も入力されていないときの処理を追加する必要がある。
 				if (i < 1) {
 					mailAddressList.add(rs.getString(MA_MAIL_ADDRESS));
 					phoneNumberList.add(rs.getString(PN_PHONE_NUMBER));
@@ -79,6 +85,8 @@ public class AddressBook {
 							memo);
 					addressList.add(address);
 				} else {
+					//2行目以降の処理
+					//uuidが被らないように一つ一つ取得する
 					String previousUuid = addressList.get(comparisonIndex).getUuid();
 					if (!uuid.equals(previousUuid)) {
 						mailAddressList.add(rs.getString(MA_MAIL_ADDRESS));
@@ -214,9 +222,9 @@ public class AddressBook {
 		String currentTime = sdf.format(date);
 
 		//戻り値の生成
-		Address addaddress = new Address(uuid.toString(), name, kana, mailAddressList, phoneNumberList, Address, memo);
+		Address newAddress = new Address(uuid.toString(), name, kana, mailAddressList, phoneNumberList, Address, memo);
 
-		//登録処理
+		//DB接続
 		connection();
 
 		//アドレス帳テーブルに登録
@@ -242,28 +250,29 @@ public class AddressBook {
 		try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 				PreparedStatement mailAddress = conn.prepareStatement(mailAddressSql);) {
 			try {
-				//ソート順用のカウンタ
+				//ソート順用カウンタ
 				int sortNumber = 1;
 				int nullNumber = 3;
 				for (int i = 1; i <= mailAddressList.size(); i++) {
 					//mail_Addressテーブル用のUUIDを生成
 					UUID mailAddressUuid = UUID.randomUUID();
 					mailAddress.setString(1, mailAddressUuid.toString());
+					//BOOK_UUID
 					mailAddress.setString(2, uuid.toString());
 
-					//nullだった場合飛ばして最後にnull詰める
+					//nullだったらソート順を逆順で詰める
 					if (mailAddressList.get(i - 1) != null) {
 						mailAddress.setString(3, String.valueOf(sortNumber));
 						mailAddress.setString(4, mailAddressList.get(i - 1));
 						sortNumber++;
 					} else {
-						//ソート順を上書き
 						mailAddress.setString(3, String.valueOf(nullNumber));
 						mailAddress.setString(4, null);
 						nullNumber--;
 					}
 					mailAddress.setString(5, currentTime);
 					mailAddress.setString(6, null);
+
 					int result = mailAddress.executeUpdate();
 				}
 			} catch (SQLException e) {
@@ -272,8 +281,43 @@ public class AddressBook {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		//メールアドレス
-		return addaddress;
+		//phone_numberテーブルに登録
+		//TODO insert文がはちゃめちゃになっているところを修正
+		try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+				PreparedStatement phoneNumber = conn.prepareStatement(phoneNumberSql);) {
+			try {
+				//ソート順用カウンタ
+				int sortNumber = 1;
+				int nullNumber = 3;
+				for (int i = 1; i <= phoneNumberList.size(); i++) {
+					//mail_Addressテーブル用のUUIDを生成
+					UUID phoneNumberUuid = UUID.randomUUID();
+					phoneNumber.setString(1, phoneNumber.toString());
+					//BOOK_UUID
+					phoneNumber.setString(2, uuid.toString());
+
+					//nullだったらソート順を逆順で詰める
+					if (phoneNumberList.get(i - 1) != null) {
+						phoneNumber.setString(3, String.valueOf(sortNumber));
+						phoneNumber.setString(4, phoneNumberList.get(i - 1));
+						sortNumber++;
+					} else {
+						phoneNumber.setString(3, String.valueOf(nullNumber));
+						phoneNumber.setString(4, null);
+						nullNumber--;
+					}
+					phoneNumber.setString(5, currentTime);
+					phoneNumber.setString(6, null);
+
+					int result = phoneNumber.executeUpdate();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return newAddress;
 	}
 
 	private void connection() {
