@@ -13,13 +13,13 @@
 
 				<tr><th>かな</th><td><input type="text" name ="txtKana" maxlength="50"></td></tr>
 
-				<tr><th>メールアドレス</th><td><input type="email" name ="txtMailAddress1" maxlength="256"></td></tr>
+				<tr><th>メールアドレス</th><td><input type="email" name ="txtMailAddress1" maxlength="256" required></td></tr>
 
 				<tr><th></th><td><input type="email" name ="txtMailAddress2" maxlength="256"></td></tr>
 
 				<tr><th></th><td><input type="email" name ="txtMailAddress3" maxlength="256"></td></tr>
 
-				<tr><th>電話番号</th><td><input type="tel" name ="txtPhoneNumber1" maxlength="20" pattern="[\d()-]*"></td></tr>
+				<tr><th>電話番号</th><td><input type="tel" name ="txtPhoneNumber1" maxlength="20" pattern="[\d()-]*" required></td></tr>
 
 				<tr><th></th><td><input type="tel" name ="txtPhoneNumber2" maxlength="20" pattern="[\d()-]*"></td></tr>
 

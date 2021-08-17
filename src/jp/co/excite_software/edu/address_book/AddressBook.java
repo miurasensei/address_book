@@ -112,14 +112,13 @@ public class AddressBook {
 
 		String sql = "select * from ADDRESS_BOOK ab where ab.uuid = '" + uuid + "'";
 		connection();
-		try (
-				Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+		try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 				PreparedStatement pStmt = conn.prepareStatement(sql);
 				ResultSet rs = pStmt.executeQuery();) {
 			List<String> mailAddressList = getMailAddressList(conn, uuid);
 			List<String> phoneNumberList = getPhoneNumberList(conn, uuid);
 
-			//要素数を3に合わせる。
+			//リストの要素数を表示項目数の3に合わせる。
 			while (mailAddressList.size() < 4) {
 				mailAddressList.add("");
 			}
@@ -133,7 +132,7 @@ public class AddressBook {
 			String streetAddress = null;
 			String memo = null;
 
-			//電話番号、メールアドレス以外を取得
+			//電話番号、メールアドレス以外の表示項目を取得
 			while (rs.next()) {
 				name = rs.getString(NAME);
 				kana = rs.getString(KANA);
@@ -151,8 +150,10 @@ public class AddressBook {
 		}
 	}
 
+	//UUIDに紐づくメールアドレスのリストを取得
 	private List<String> getMailAddressList(Connection conn, String uuid) {
-		String sql = "Select ma.mail_address from MAIL_ADDRESS ma where ma.book_uuid ='" + uuid + "'";
+		String sql = "Select ma.mail_address from MAIL_ADDRESS ma where ma.book_uuid ='" + uuid + "'"
+				+ " order by ma.sort_order ";
 		try (PreparedStatement pStmt = conn.prepareStatement(sql);
 				ResultSet rs = pStmt.executeQuery();) {
 			//リストに結果を格納
@@ -167,8 +168,10 @@ public class AddressBook {
 		}
 	}
 
+	//UUIDに紐づく電話番号のリストを取得
 	private List<String> getPhoneNumberList(Connection conn, String uuid) {
-		String sql = "Select pn.phone_number from PHONE_NUMBER pn where pn.book_uuid = '" + uuid + "'";
+		String sql = "Select pn.phone_number from PHONE_NUMBER pn where pn.book_uuid = '" + uuid + "'"
+				+ " order by pn.sort_order ";
 		try (PreparedStatement pStmt = conn.prepareStatement(sql);
 				ResultSet rs = pStmt.executeQuery();) {
 			//リストに結果を格納
@@ -185,13 +188,20 @@ public class AddressBook {
 
 	//削除
 	public void delete(String uuid) {
-		String sql = "delete from ADDRESS_BOOK where uuid = '" + uuid + "'";
+		String deleteAddressSql = "DELETE FROM ADDRESS_BOOK WHERE UUID = '" + uuid + "'";
+		String deleteMailSql = "DELETE FROM PHONE_NUMBER WHERE BOOK_UUID = '" + uuid + "'";
+		String deletePhoneSql = "DELETE FROM SHOPPING_LIST WHERE BOOK_UUID = '" + uuid + "'";
+
 		connection();
 		try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-				PreparedStatement pStmt = conn.prepareStatement(sql);) {
+				PreparedStatement aPStmt = conn.prepareStatement(deleteAddressSql);
+				PreparedStatement mPStmt = conn.prepareStatement(deleteMailSql);
+				PreparedStatement pPStmt = conn.prepareStatement(deletePhoneSql);) {
 			try {
-				int rs = pStmt.executeUpdate();
-				//TODO rsが0の時エラーメッセージ
+				int aRslt = aPStmt.executeUpdate();
+				int mRslt = mPStmt.executeUpdate();
+				int pRslt = pPStmt.executeUpdate();
+				//TODO 処理件数が0の場合、エラーメッセージを画面表示
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -282,7 +292,6 @@ public class AddressBook {
 			e.printStackTrace();
 		}
 		//phone_numberテーブルに登録
-		//TODO insert文がはちゃめちゃになっているところを修正
 		try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 				PreparedStatement phoneNumber = conn.prepareStatement(phoneNumberSql);) {
 			try {
@@ -292,7 +301,7 @@ public class AddressBook {
 				for (int i = 1; i <= phoneNumberList.size(); i++) {
 					//mail_Addressテーブル用のUUIDを生成
 					UUID phoneNumberUuid = UUID.randomUUID();
-					phoneNumber.setString(1, phoneNumber.toString());
+					phoneNumber.setString(1, phoneNumberUuid.toString());
 					//BOOK_UUID
 					phoneNumber.setString(2, uuid.toString());
 

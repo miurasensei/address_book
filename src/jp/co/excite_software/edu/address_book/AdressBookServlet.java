@@ -54,7 +54,7 @@ public class AdressBookServlet extends HttpServlet {
 		//UUID
 		String hidUuid = request.getParameter("hidUuid");
 
-		//参照ボタン
+		//一覧ボタンから参照ボタンが押下された時
 		String btnRefer = request.getParameter("btnRefer");
 		if (btnRefer != null) {
 			String referUuid = request.getParameter("referUuid");
@@ -64,7 +64,7 @@ public class AdressBookServlet extends HttpServlet {
 			URL = "WEB-INF/jsp/ADR003.jsp";
 		}
 
-		//削除ボタン
+		//参照画面から削除ボタンが押下された場合
 		String btnDelete = request.getParameter("btnDelete");
 		if (btnDelete != null) {
 			//削除処理
@@ -83,7 +83,6 @@ public class AdressBookServlet extends HttpServlet {
 		}
 
 		//新規登録画面から登録ボタンが押下された時
-		//登録処理
 		String btnRegister = request.getParameter("btnRegister");
 
 		if (btnRegister != null) {
@@ -106,6 +105,11 @@ public class AdressBookServlet extends HttpServlet {
 			AddressBook arb = new AddressBook();
 			List<Address> addressList = arb.getAll();
 			request.setAttribute("addressList", addressList);
+		}
+		//参照画面から修正ボタンが押されたとき
+		String btnEdit = request.getParameter("btnEdit");
+		if (btnEdit != null) {
+			URL = "WEB-INF/jsp/ADR004.jsp";
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(URL);

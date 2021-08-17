@@ -4,3 +4,16 @@ body{
 	background-color:#9DCCE0;
 	display:flex;
 }
+
+.container{
+	margin:0 auto;
+}
+
+table{
+	border-collapse: separate;
+	border-spacing: 30px 10px;
+}
+
+.container_btn{
+	margin:30px auto;
+}
